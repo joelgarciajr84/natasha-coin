@@ -9,8 +9,8 @@ class Transaction{
 }
 
 class Block {
-    constructor(timestamp, transactions, previousHash = '') {
-        this.previousHash = previousHash;
+    constructor(timestamp, transactions, prevHash = '') {
+        this.prevHash = prevHash;
         this.timestamp = timestamp;
         this.transactions = transactions;
         this.hash = this.calculateHash();
@@ -18,7 +18,7 @@ class Block {
     }
 
     calculateHash() {
-        return EncryptSHA256(this.previousHash + this.timestamp + JSON.stringify(this.transactions) + this.nonce).toString();
+        return EncryptSHA256(this.prevHash + this.timestamp + JSON.stringify(this.transactions) + this.nonce).toString();
     }
 
     mineBlock(difficulty) {
@@ -34,13 +34,13 @@ class Block {
 
 class Blockchain{
     constructor() {
-        this.chain = [this.createFirstBlock()];
-        this.difficulty = 3;
+        this.chain = [this.createFirstNatashaBlock()];
+        this.difficulty = 4;
         this.pendingTransactions = [];
         this.miningReward = 100;
     }
 
-    createFirstBlock() {
+    createFirstNatashaBlock() {
         return new Block(Date.parse("2008-05-23"), [], "0");
     }
 
@@ -49,17 +49,18 @@ class Blockchain{
     }
 
     goMinePendingTransactions(RewardAddress){
-        console.log("NUMBER OF PENDING TRANSACTIONS =>", this.pendingTransactions.length)
+
         if(this.pendingTransactions.length == 0){
             console.log('There is no pending transactions - nothing will be done!');
             return;
         }
 
-        console.log('Starting mining ...!');
+
         let block = new Block(Date.now(), this.pendingTransactions, this.getLatestBlock().hash);
         block.mineBlock(this.difficulty);
+
         console.log('New Block successfully mined!');
-        this.pendingTransactions--;
+
         this.chain.push(block);
 
         this.pendingTransactions = [
@@ -99,7 +100,7 @@ class Blockchain{
                 return false;
             }
 
-            if (currentBlock.previousHash !== previousBlock.hash) {
+            if (currentBlock.prevHash !== previousBlock.hash) {
                 return false;
             }
         }
