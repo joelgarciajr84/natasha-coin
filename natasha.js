@@ -1,6 +1,6 @@
 const EncryptSHA256 = require("crypto-js/sha256");
 
-class Transaction{
+ class Transaction{
     constructor(from, to, amount){
         this.from = from;
         this.to = to;
@@ -8,7 +8,7 @@ class Transaction{
     }
 }
 
-class Block {
+ class Block {
     constructor(timestamp, transactions, prevHash = '') {
         this.prevHash = prevHash;
         this.timestamp = timestamp;
@@ -27,15 +27,15 @@ class Block {
             this.hash = this.calculateHash();
         }
 
-        console.log("BLOCK MINED: " + this.hash);
+        //console.log("BLOCK MINED: " + this.hash);
     }
 }
 
 
-class Blockchain{
+ class Blockchain{
     constructor() {
         this.chain = [this.createFirstNatashaBlock()];
-        this.difficulty = 4;
+        this.difficulty = 2;
         this.pendingTransactions = [];
         this.miningReward = 100;
     }
@@ -50,16 +50,10 @@ class Blockchain{
 
     goMinePendingTransactions(RewardAddress){
 
-        if(this.pendingTransactions.length == 0){
-            console.log('There is no pending transactions - nothing will be done!');
-            return;
-        }
-
-
         let block = new Block(Date.now(), this.pendingTransactions, this.getLatestBlock().hash);
         block.mineBlock(this.difficulty);
 
-        console.log('New Block successfully mined!');
+       console.log('New Block successfully mined!');
 
         this.chain.push(block);
 
@@ -109,22 +103,25 @@ class Blockchain{
     }
 }
 
-let natashaCoin = new Blockchain();
+module.exports = new Blockchain();
 
-natashaCoin.createTransaction(new Transaction('Snake', 'Ocelot', 500));
-natashaCoin.createTransaction(new Transaction('Ocelot', 'BigBoss', 400));
+//
+// let natashaCoin = new Blockchain();
+//
+//natashaCoin.createTransaction(new Transaction('Snake', 'Ocelot', 500));
+// natashaCoin.createTransaction(new Transaction('Ocelot', 'BigBoss', 400));
+// //
+// natashaCoin.goMinePendingTransactions('Otacon');
+// natashaCoin.goMinePendingTransactions('Otacon');
+// natashaCoin.goMinePendingTransactions('Mantis');
+// natashaCoin.goMinePendingTransactions('Otacon');
+// natashaCoin.goMinePendingTransactions('Mantis');
 
-natashaCoin.goMinePendingTransactions('Otacon');
-natashaCoin.goMinePendingTransactions('Otacon');
-natashaCoin.goMinePendingTransactions('Mantis');
-natashaCoin.goMinePendingTransactions('Otacon');
-natashaCoin.goMinePendingTransactions('Mantis');
 
-
-console.log('\nBalance of Snake', natashaCoin.getBalanceOf('Snake'));
-console.log('\nBalance of Ocelot', natashaCoin.getBalanceOf('Ocelot'));
-console.log('\nBalance of BigBoss', natashaCoin.getBalanceOf('BigBoss'));
-console.log('\nBalance of Otacon', natashaCoin.getBalanceOf('Otacon'));
-console.log('\nBalance of Otacon', natashaCoin.getBalanceOf('Mantis'));
+// console.log('\nBalance of Snake', natashaCoin.getBalanceOf('Snake'));
+// console.log('\nBalance of Ocelot', natashaCoin.getBalanceOf('Ocelot'));
+// console.log('\nBalance of BigBoss', natashaCoin.getBalanceOf('BigBoss'));
+// console.log('\nBalance of Otacon', natashaCoin.getBalanceOf('Otacon'));
+// console.log('\nBalance of Otacon', natashaCoin.getBalanceOf('Mantis'));
 //
 //console.log(JSON.stringify(natashaCoin, null, 4));
